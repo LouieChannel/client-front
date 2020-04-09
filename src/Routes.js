@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Home from './pages/Home';
-import Login from './pages/login/Login';
+import Login2 from './pages/login/Login2';
 
 export default function App() {
     return (
@@ -10,7 +10,7 @@ export default function App() {
             <div>
                 <Switch>
                     <Route path="/login">
-                        <Login />
+                        <Login2 />
                     </Route>
                     <Route path="/">
                         <Home />
