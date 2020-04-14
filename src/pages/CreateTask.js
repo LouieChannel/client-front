@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 export default function CreateTask() {
   const classes = useStyles();
   const { register, handleSubmit } = useForm();
-  React.useEffect(() => {
+  useEffect(() => {
     register({ name: 'email' });
     register({ name: 'password' });
   }, [register]);
@@ -59,7 +59,7 @@ export default function CreateTask() {
       <Header />
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
           <div className={classes.paper}>
             <Typography component="h1" variant="h5">
               Создание маршутных заданий

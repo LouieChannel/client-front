@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import * as signalR from '@microsoft/signalr';
 
 import Header from '../components/header/Header';
 
@@ -39,9 +40,28 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
+
+
 export default function Album() {
   const classes = useStyles();
 
+  const hubConnection = new signalR.HubConnectionBuilder()
+  .withUrl('http://34.77.137.219/logist')
+  .configureLogging(signalR.LogLevel.Information)
+  .build();
+
+hubConnection.start().then((a) => {
+  // Once started, invokes the sendConnectionId in our ChatHub inside our ASP.NET Core application.
+  if (hubConnection.connectionId) {
+    hubConnection.invoke('GetAllTasks');
+  }
+});
+
+  useEffect(() => {
+    hubConnection.on('GetAllTasks', (message) => {
+      console.log('data', message);
+    });
+  }, [hubConnection]);
   return (
     <>
       <CssBaseline />
