@@ -39,11 +39,14 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
+
+const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
+
 export default function Album() {
   const classes = useStyles();
 
   const hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl('http://34.77.137.219/logist/')
+    .withUrl(`${BASE_URL}/logist/`)
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
