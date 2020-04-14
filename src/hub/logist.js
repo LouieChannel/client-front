@@ -1,21 +1,19 @@
 import * as signalR from '@microsoft/signalr';
 
-const connection = new signalR.HubConnectionBuilder()
-  .withUrl('http://34.77.137.219')
-  .configureLogging(signalR.LogLevel.Information);
-
-async function start() {
+function start() {
   try {
-    await connection.start();
-    console.log('connected');
-  } catch (err) {
-    console.log(err);
-    setTimeout(() => start(), 5000);
+    const hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl('http://34.77.137.219/logist/')
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+
+    hubConnection.start().then((a) => {
+      if (hubConnection.connectionId) {
+        hubConnection.invoke('GetAllTasks');
+      }
+    });
+  } catch (error) {
+    console.log(error);
   }
 }
-
-// connection.onclose(async () => {
-//   await start();
-// });
-
-export { start, connection };
+export default start;

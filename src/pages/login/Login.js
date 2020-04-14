@@ -70,7 +70,6 @@ export default function SignInSide() {
   }, [register]);
 
   const onSubmit = (data) => {
-    console.log(data);
     requestLogin({
       email: data.email,
       password: data.password,
