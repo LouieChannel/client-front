@@ -8,6 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Header from '../components/header/Header';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -37,11 +38,12 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
-export default function Album() {
+export default function Driver() {
   const classes = useStyles();
 
   return (
     <>
+      <Header name="Driver" />
       <CssBaseline />
       <main>
         {/* Hero unit */}

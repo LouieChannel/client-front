@@ -9,6 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import buildConnection from '../hub/logist';
+import Header from '../components/header/Header';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -59,11 +60,12 @@ export default function Logist() {
       console.log('data', message);
     });
   }, [hubConnection]);
+
   return (
     <>
+      <Header name="Logist" />
       <CssBaseline />
       <main>
-        {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="l">
             <TableContainer component={Paper}>

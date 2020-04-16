@@ -20,9 +20,8 @@ const getUser = () => {
   };
 };
 
-const user = getUser();
-
 function PrivateRoute({ children, ...rest }) {
+  const user = getUser();
   return (
     <Route
       {...rest}
@@ -42,11 +41,12 @@ function PrivateRoute({ children, ...rest }) {
   );
 }
 function LogistPrivateRoute({ children, ...rest }) {
+  const user = getUser();
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        user.isAuthenticated && user.role === 'logist' ? (
+        user.isAuthenticated && user.role === 'Logist' ? (
           children
         ) : (
           <Redirect
@@ -61,11 +61,13 @@ function LogistPrivateRoute({ children, ...rest }) {
   );
 }
 function DriverPrivateRoute({ children, ...rest }) {
+  const user = getUser();
+
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        user.isAuthenticated && user.role === 'driver' ? (
+        user.isAuthenticated && user.role === 'Driver' ? (
           children
         ) : (
           <Redirect
