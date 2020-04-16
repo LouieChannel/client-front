@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -9,6 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Header from '../components/header/Header';
+import buildConnection from '../hub/logist';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -38,8 +39,34 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
+const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
+
 export default function Driver() {
   const classes = useStyles();
+  const token = localStorage.getItem('access_token');
+
+  const hubConnection = buildConnection(`${BASE_URL}/driver/`, {
+    accessTokenFactory: () => token,
+  });
+
+  useEffect(() => {
+    function startConnection() {
+      hubConnection
+        .start()
+        .then(() => {
+          if (hubConnection.connectionId) {
+            hubConnection.send('GetDriverTasks');
+          }
+        })
+        .catch((e) => console.log(e));
+    }
+
+    startConnection();
+
+    hubConnection.on('GetDriverTasks', (message) => {
+      console.log('data', message);
+    });
+  }, [hubConnection]);
 
   return (
     <>
@@ -48,7 +75,7 @@ export default function Driver() {
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>
-          <Container maxWidth="l">
+          <Container maxWidth="xl">
             <TableContainer component={Paper}>
               <Table className={classes.table} aria-label="simple table">
                 <TableBody>
@@ -68,9 +95,6 @@ export default function Driver() {
             </TableContainer>
           </Container>
         </div>
-        <Container className={classes.cardGrid} maxWidth="md">
-          {/* End hero unit */}
-        </Container>
       </main>
       {/* End footer */}
     </>

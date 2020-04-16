@@ -44,18 +44,25 @@ const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 export default function Logist() {
   const classes = useStyles();
 
-  const hubConnection = buildConnection(`${BASE_URL}/logist/`);
+  const token = localStorage.getItem('access_token');
 
-  hubConnection
-    .start()
-    .then(() => {
-      if (hubConnection.connectionId) {
-        hubConnection.send('GetAllTasks');
-      }
-    })
-    .catch((e) => console.log(e));
+  const hubConnection = buildConnection(`${BASE_URL}/logist/`, {
+    accessTokenFactory: () => token,
+  });
 
   useEffect(() => {
+    function startConnection() {
+      hubConnection
+        .start()
+        .then(() => {
+          if (hubConnection.connectionId) {
+            hubConnection.send('GetAllTasks');
+          }
+        })
+        .catch((e) => console.log(e));
+    }
+
+    startConnection();
     hubConnection.on('GetAllTasks', (message) => {
       console.log('data', message);
     });
@@ -67,7 +74,7 @@ export default function Logist() {
       <CssBaseline />
       <main>
         <div className={classes.heroContent}>
-          <Container maxWidth="l">
+          <Container maxWidth="lg">
             <TableContainer component={Paper}>
               <Table className={classes.table} aria-label="simple table">
                 <TableBody>

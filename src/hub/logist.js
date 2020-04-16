@@ -1,8 +1,9 @@
 import * as signalR from '@microsoft/signalr';
 
-function buildConnection(url) {
+function buildConnection(url, options) {
+  console.log(options);
   const hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(url)
+    .withUrl(url, options)
     .configureLogging(signalR.LogLevel.Information)
     .build();
 

@@ -3,7 +3,7 @@ function saveToLocalStorage(key, value) {
 }
 
 function getFromLocalStorage(key) {
-  return localStorage.get(key);
+  return localStorage.getItem(key);
 }
 
 export { saveToLocalStorage, getFromLocalStorage };
