@@ -1,34 +1,107 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/login/Login';
 import Logist from './pages/Logist';
 import Driver from './pages/Driver';
 import CreateTask from './pages/CreateTask';
 
+const getUser = () => {
+  const token = localStorage.getItem('access_token');
+  const role = localStorage.getItem('role');
+  return {
+    isAuthenticated: token && token.length > 0,
+    role: role ? role : null,
+  };
+};
+
+const user = getUser();
+
+function PrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        user.isAuthenticated ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: { from: location },
+            }}
+          />
+        )
+      }
+    />
+  );
+}
+function LogistPrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        user.isAuthenticated && user.role === 'logist' ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: { from: location },
+            }}
+          />
+        )
+      }
+    />
+  );
+}
+function DriverPrivateRoute({ children, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) =>
+        user.isAuthenticated && user.role === 'driver' ? (
+          children
+        ) : (
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: { from: location },
+            }}
+          />
+        )
+      }
+    />
+  );
+}
+
 export default function App() {
   return (
-    <Router>
-      <div>
+    <>
+      <Router>
         <Switch>
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/logist">
+          <LogistPrivateRoute path="/logist">
             <Logist />
-          </Route>
-          <Route path="/driver">
+          </LogistPrivateRoute>
+          <DriverPrivateRoute path="/driver">
             <Driver />
-          </Route>
-          <Route path="/create-task">
+          </DriverPrivateRoute>
+          <PrivateRoute path="/create-task">
             <CreateTask />
-          </Route>
+          </PrivateRoute>
           <Route path="/">
             <Home />
           </Route>
         </Switch>
-      </div>
-    </Router>
+      </Router>
+    </>
   );
 }

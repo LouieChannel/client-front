@@ -9,8 +9,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-import Header from '../components/header/Header';
-
 const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: theme.spacing(2),
@@ -45,7 +43,6 @@ export default function Album() {
   return (
     <>
       <CssBaseline />
-      <Header name="Водитель" />
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>

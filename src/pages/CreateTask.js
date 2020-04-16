@@ -9,7 +9,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import bg from '../assets/bg.jpeg';
 import { useForm } from 'react-hook-form';
 import { YMaps, Map } from 'react-yandex-maps';
-import Header from '../components/header/Header';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,7 +55,6 @@ export default function CreateTask() {
   };
   return (
     <>
-      <Header />
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
         <Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
@@ -141,7 +139,7 @@ export default function CreateTask() {
             </form>
           </div>
         </Grid>
-        <Grid item xs={false} sm={4} md={7}>
+        <Grid item xs={false} sm={4} md={8}>
           <YMaps>
             <Map
               defaultState={{ center: [55.75, 37.57], zoom: 9 }}

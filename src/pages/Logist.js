@@ -8,8 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import * as signalR from '@microsoft/signalr';
-import Header from '../components/header/Header';
+import buildConnection from '../hub/logist';
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -39,20 +38,16 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
-
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
-export default function Album() {
+export default function Logist() {
   const classes = useStyles();
 
-  const hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl(`${BASE_URL}/logist/`)
-    .configureLogging(signalR.LogLevel.Information)
-    .build();
+  const hubConnection = buildConnection(`${BASE_URL}/logist/`);
 
   hubConnection
     .start()
-    .then((a) => {
+    .then(() => {
       if (hubConnection.connectionId) {
         hubConnection.send('GetAllTasks');
       }
@@ -67,7 +62,6 @@ export default function Album() {
   return (
     <>
       <CssBaseline />
-      <Header name="Логист" />
       <main>
         {/* Hero unit */}
         <div className={classes.heroContent}>
