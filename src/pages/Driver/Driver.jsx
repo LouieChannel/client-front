@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -11,21 +11,11 @@ import Header from '../../components/header/Header';
 import buildConnection from '../../utils/signalRconnection';
 import useStyles from './style';
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
 export default function Driver() {
+  const [data, setData] = useState([]);
+
   const classes = useStyles();
   const token = localStorage.getItem('access_token');
 
@@ -46,10 +36,11 @@ export default function Driver() {
     }
     startConnection();
 
-    hubConnection.on('GetDriverTasks', (message) => {
-      console.log('data', message);
+    hubConnection.on('GetDriverTasks', (data) => {
+      setData(JSON.parse(data));
     });
-  }, [hubConnection]);
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <>
@@ -59,23 +50,28 @@ export default function Driver() {
         {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="xl">
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label="simple table">
-                <TableBody>
-                  {rows.map((row) => (
-                    <TableRow key={row.name} hover>
-                      <TableCell component="th" scope="row">
-                        {row.name}
-                      </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            {data.length > 0 && (
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="simple table">
+                  <TableBody>
+                    {data.map((item) => (
+                      <TableRow key={item.Id} hover>
+                        <TableCell component="th" scope="row">
+                          Driver :{item.Driver.FullName}
+                        </TableCell>
+                        <TableCell align="right">
+                          {' '}
+                          Logist :{item.Logist.FullName}
+                        </TableCell>
+                        <TableCell align="right">
+                          CreatedAt :{item.CreatedAt}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
           </Container>
         </div>
       </main>

@@ -9,10 +9,30 @@ import { useForm } from 'react-hook-form';
 import { YMaps, Map } from 'react-yandex-maps';
 import Header from '../../components/header/Header';
 import useStyles from './style';
+import buildConnection from '../../utils/signalRconnection';
+
+const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
 export default function CreateTask() {
   const classes = useStyles();
-  const { register, handleSubmit } = useForm();
+  const { register } = useForm();
+
+  const token = localStorage.getItem('access_token');
+
+  const hubConnection = buildConnection(`${BASE_URL}/logist/`, {
+    accessTokenFactory: () => token,
+  });
+
+  useEffect(() => {
+    function startConnection() {
+      hubConnection
+        .start()
+        .then(() => {})
+        .catch((e) => console.log(e));
+    }
+
+    startConnection();
+  }, [hubConnection]);
 
   useEffect(() => {
     register({ name: 'email' });
@@ -21,11 +41,27 @@ export default function CreateTask() {
 
   const onSubmit = (data) => {
     console.log(data);
+
+    hubConnection
+      .send('CreateTask', {
+        Driver: {
+          Id: 2,
+          FullName: 'DriverTest',
+        },
+        Description: 'test',
+        StartLongitude: 50.1354,
+        StartLatitude: 30.4324,
+        EndLongitude: 1.4342,
+        EndLatitude: 43.1234,
+        Status: 1,
+        Entity: 'dasfas',
+      })
+      .then((e) => console.log(e));
   };
 
   return (
     <>
-      <Header name="Create task" />
+      <Header name="Create task for driver" />
       <Grid container component="main" className={classes.root}>
         <CssBaseline />
         <Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
@@ -34,7 +70,7 @@ export default function CreateTask() {
               Создание маршутных заданий
             </Typography>
 
-            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+            <form className={classes.form}>
               <TextField
                 id="time"
                 type="text"
@@ -91,7 +127,7 @@ export default function CreateTask() {
 
               <Grid>
                 <Button
-                  type="submit"
+                  onClick={onSubmit}
                   variant="contained"
                   color="primary"
                   className={classes.submit}
@@ -99,10 +135,10 @@ export default function CreateTask() {
                   Сохранить
                 </Button>
                 <Button
-                  type="submit"
                   variant="contained"
                   color="secondary"
                   className={classes.submit}
+                  onClick={onSubmit}
                 >
                   Отменить
                 </Button>

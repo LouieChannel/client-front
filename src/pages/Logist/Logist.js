@@ -27,10 +27,9 @@ const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
 export default function Logist() {
   const classes = useStyles();
-
   const token = localStorage.getItem('access_token');
 
-  const hubConnection = buildConnection(`${BASE_URL}/logist/`, {
+  const hubConnection = buildConnection(`${BASE_URL}/logist`, {
     accessTokenFactory: () => token,
   });
 

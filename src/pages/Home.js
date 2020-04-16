@@ -15,9 +15,8 @@ function Home() {
           <a href="/driver">Driver Page</a>
         </li>
         <li>
-          <a href="/create-task">Create Task</a>
+          <a href="/create-task">Create task for driver</a>
         </li>
-        
       </ul>
     </div>
   );
