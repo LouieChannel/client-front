@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { saveToLocalStorage } from '../helpers';
+import { saveToLocalStorage } from '../utils/helpers';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 

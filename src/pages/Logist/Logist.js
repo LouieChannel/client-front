@@ -6,26 +6,10 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import Header from '../components/header/Header';
-import buildConnection from '../hub/logist';
-
-const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(2),
-  },
-  heroContent: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(8, 0, 6),
-  },
-  heroButtons: {
-    marginTop: theme.spacing(4),
-  },
-  table: {
-    minWidth: 1200,
-  },
-}));
+import buildConnection from '../../utils/signalRconnection';
+import Header from '../../components/header/Header';
+import useStyles from './style';
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -41,11 +25,12 @@ const rows = [
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
-export default function Driver() {
+export default function Logist() {
   const classes = useStyles();
+
   const token = localStorage.getItem('access_token');
 
-  const hubConnection = buildConnection(`${BASE_URL}/driver/`, {
+  const hubConnection = buildConnection(`${BASE_URL}/logist/`, {
     accessTokenFactory: () => token,
   });
 
@@ -55,27 +40,25 @@ export default function Driver() {
         .start()
         .then(() => {
           if (hubConnection.connectionId) {
-            hubConnection.send('GetDriverTasks');
+            hubConnection.send('GetAllTasks');
           }
         })
         .catch((e) => console.log(e));
     }
 
     startConnection();
-
-    hubConnection.on('GetDriverTasks', (message) => {
+    hubConnection.on('GetAllTasks', (message) => {
       console.log('data', message);
     });
   }, [hubConnection]);
 
   return (
     <>
-      <Header name="Driver" />
+      <Header name="Logist" />
       <CssBaseline />
       <main>
-        {/* Hero unit */}
         <div className={classes.heroContent}>
-          <Container maxWidth="xl">
+          <Container maxWidth="lg">
             <TableContainer component={Paper}>
               <Table className={classes.table} aria-label="simple table">
                 <TableBody>
@@ -95,6 +78,9 @@ export default function Driver() {
             </TableContainer>
           </Container>
         </div>
+        <Container className={classes.cardGrid} maxWidth="md">
+          {/* End hero unit */}
+        </Container>
       </main>
       {/* End footer */}
     </>

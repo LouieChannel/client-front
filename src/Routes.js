@@ -6,10 +6,10 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Home from './pages/Home';
-import Login from './pages/login/Login';
-import Logist from './pages/Logist';
-import Driver from './pages/Driver';
-import CreateTask from './pages/CreateTask';
+import Login from './pages/Login/Login';
+import Logist from './pages/Logist/Logist';
+import Driver from './pages/Driver/Driver';
+import CreateTask from './pages/CreateTask/CreateTask';
 
 const getUser = () => {
   const token = localStorage.getItem('access_token');
@@ -31,7 +31,7 @@ function PrivateRoute({ children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: '/Login',
               state: { from: location },
             }}
           />
@@ -51,7 +51,7 @@ function LogistPrivateRoute({ children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: '/Login',
               state: { from: location },
             }}
           />
@@ -72,7 +72,7 @@ function DriverPrivateRoute({ children, ...rest }) {
         ) : (
           <Redirect
             to={{
-              pathname: '/login',
+              pathname: '/Login',
               state: { from: location },
             }}
           />
