@@ -5,55 +5,24 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import bg from '../../assets/bg.jpeg';
 import { useForm } from 'react-hook-form';
 import { YMaps, Map } from 'react-yandex-maps';
 import Header from '../../components/header/Header';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: '100vh',
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-    },
-    '& .MuiButton-root': {
-      margin: theme.spacing(1),
-    },
-  },
-  image: {
-    backgroundImage: `url(${bg})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundColor:
-      theme.palette.type === 'light'
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  },
-  paper: {
-    margin: theme.spacing(8, 4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(5),
-  },
-}));
+import useStyles from './style';
 
 export default function CreateTask() {
   const classes = useStyles();
   const { register, handleSubmit } = useForm();
+
   useEffect(() => {
     register({ name: 'email' });
     register({ name: 'password' });
   }, [register]);
+
   const onSubmit = (data) => {
     console.log(data);
   };
+
   return (
     <>
       <Header name="Create task" />

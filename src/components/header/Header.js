@@ -15,7 +15,11 @@ const useStyles = makeStyles((theme) => ({
 export default function Header(props) {
   const classes = useStyles();
   return (
-    <AppBar position="relative" color="primary">
+    <AppBar
+      style={{ background: '#2E3B55' }}
+      position="relative"
+      color="primary"
+    >
       <Toolbar>
         <HomeIcon
           className={classes.icon}
