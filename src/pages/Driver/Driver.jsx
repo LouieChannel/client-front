@@ -39,6 +39,10 @@ export default function Driver() {
     hubConnection.on('GetDriverTasks', (data) => {
       setData(JSON.parse(data));
     });
+
+    return () => {
+      hubConnection.stop();
+    };
     // eslint-disable-next-line
   }, []);
 

@@ -39,6 +39,9 @@ export default function Logist() {
       console.log('data', data);
       setData(JSON.parse(data));
     });
+    return () => {
+      hubConnection.stop();
+    };
     // eslint-disable-next-line
   }, []);
 

@@ -13,6 +13,20 @@ import buildConnection from '../../utils/signalRconnection';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
+const testData = {
+  Driver: {
+    Id: 2,
+    FullName: 'DriverTest',
+  },
+  Description: 'test',
+  StartLongitude: 50.1354,
+  StartLatitude: 30.4324,
+  EndLongitude: 1.4342,
+  EndLatitude: 43.1234,
+  Status: 1,
+  Entity: 'dasfas',
+};
+
 export default function CreateTask() {
   const classes = useStyles();
   const { register } = useForm();
@@ -32,6 +46,10 @@ export default function CreateTask() {
     }
 
     startConnection();
+
+    return () => {
+      hubConnection.stop();
+    };
   }, [hubConnection]);
 
   useEffect(() => {
@@ -43,19 +61,7 @@ export default function CreateTask() {
     console.log(data);
 
     hubConnection
-      .send('CreateTask', {
-        Driver: {
-          Id: 2,
-          FullName: 'DriverTest',
-        },
-        Description: 'test',
-        StartLongitude: 50.1354,
-        StartLatitude: 30.4324,
-        EndLongitude: 1.4342,
-        EndLatitude: 43.1234,
-        Status: 1,
-        Entity: 'dasfas',
-      })
+      .send('CreateTask', JSON.stringify(testData))
       .then((e) => console.log(e));
   };
 
