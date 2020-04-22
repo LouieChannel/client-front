@@ -1,15 +1,11 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login/Login';
 import Logist from './pages/Logist/Logist';
 import Driver from './pages/Driver/Driver';
 import CreateTask from './pages/CreateTask/CreateTask';
+import SignUp from './pages/SignUp/SignUp';
 
 const getUser = () => {
   const token = localStorage.getItem('access_token');
@@ -89,6 +85,9 @@ export default function App() {
         <Switch>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/sign_up">
+            <SignUp />
           </Route>
           <LogistPrivateRoute path="/logist">
             <Logist />

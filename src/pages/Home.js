@@ -9,6 +9,9 @@ function Home() {
           <a href="/login">Login Page</a>
         </li>
         <li>
+          <a href="/sign_up">Sign up (NEW)</a>
+        </li>
+        <li>
           <a href="/logist">Logist</a>
         </li>
         <li>
