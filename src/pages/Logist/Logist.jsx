@@ -51,7 +51,7 @@ export default function Logist() {
 		});
 
 		hubConnection.on('UpdateTask', (data) => {
-			console.log('data-CreateTask', new Date(), data);
+			console.log('data-UpdateTask', new Date(), data);
 			const receiveData = JSON.parse(data);
 			setData((state) => ({ [receiveData.Id]: { ...receiveData }, ...state }));
 		});
