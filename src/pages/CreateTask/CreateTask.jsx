@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -10,158 +10,245 @@ import { YMaps, Map } from 'react-yandex-maps';
 import Header from '../../components/header/Header';
 import useStyles from './style';
 import buildConnection from '../../utils/signalRconnection';
-
-const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
-
-const testData = {
-  Driver: {
-    Id: 2,
-    FullName: 'DriverTest',
-  },
-  Description: 'test',
-  StartLongitude: 50.1354,
-  StartLatitude: 30.4324,
-  EndLongitude: 1.4342,
-  EndLatitude: 43.1234,
-  Status: 1,
-  Entity: 'dasfas',
-};
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import { BASE_URL, conditions, statuses, TOKEN } from './config';
 
 export default function CreateTask() {
-  const classes = useStyles();
-  const { register } = useForm();
+	const classes = useStyles();
+	const { register, handleSubmit } = useForm();
 
-  const token = localStorage.getItem('access_token');
+	const [drivers, setDrivers] = useState([]);
+	const [driverValue, setDriverValue] = useState(2);
+	const [statusValue, setStatusValue] = useState(1);
+	const [conditionValue, setConditionValue] = useState(1);
 
-  const hubConnection = buildConnection(`${BASE_URL}/logist/`, {
-    accessTokenFactory: () => token,
-  });
+	const handleChangeSelect = (e) => {
+		const setValue = {
+			'driver-select': (value) => {
+				setDriverValue(value);
+			},
+			'status-select': (value) => {
+				setStatusValue(value);
+			},
+			'condition-select': (value) => {
+				setConditionValue(value);
+			},
+		};
 
-  useEffect(() => {
-    function startConnection() {
-      hubConnection
-        .start()
-        .then(() => {})
-        .catch((e) => console.log(e));
-    }
+		setValue[e.target.name](e.target.value);
+	};
 
-    startConnection();
+	const hubConnection = buildConnection(`${BASE_URL}/logist/`, {
+		accessTokenFactory: () => TOKEN,
+	});
 
-    return () => {
-      hubConnection.stop();
-    };
-  }, [hubConnection]);
+	useEffect(() => {
+		function startConnection() {
+			hubConnection
+				.start()
+				.then(() => {
+					hubConnection.send('GetAllDrivers');
+				})
+				.catch((e) => console.log(e));
+		}
 
-  useEffect(() => {
-    register({ name: 'email' });
-    register({ name: 'password' });
-  }, [register]);
+		startConnection();
 
-  const onSubmit = (data) => {
-    console.log(data);
+		return () => {
+			hubConnection.stop();
+		};
+	}, [hubConnection]);
 
-    hubConnection
-      .send('CreateTask', JSON.stringify(testData))
-      .then((e) => console.log(e));
-  };
+	useEffect(() => {
+		register({ name: 'Description' });
+		register({ name: 'StartLatitude' });
+		register({ name: 'StartLongitude' });
+		register({ name: 'EndLatitude' });
+		register({ name: 'EndLongitude' });
+	}, [register]);
 
-  return (
-    <>
-      <Header name="Create task for driver" />
-      <Grid container component="main" className={classes.root}>
-        <CssBaseline />
-        <Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
-          <div className={classes.paper}>
-            <Typography component="h1" variant="h5">
-              Создание маршутных заданий
-            </Typography>
+	useEffect(() => {
+		hubConnection.on('GetAllDrivers', (data) => {
+			if (drivers.length === 0) {
+				const parsedData = JSON.parse(data);
+				setDrivers(parsedData);
+			}
+		});
+		// eslint-disable-next-line
+	}, []);
 
-            <form className={classes.form}>
-              <TextField
-                id="time"
-                type="text"
-                margin="normal"
-                fullWidth
-                label="Описание"
-                variant="outlined"
-              />
-              <Typography
-                component="h1"
-                variant="h6"
-                style={{ marginTop: '10px' }}
-              >
-                Задание
-              </Typography>
+	const onSubmit = (data) => {
+		const Driver = drivers.filter((item) => item.Id === driverValue);
+		const Entity = conditions.filter((item) => item.id === conditionValue);
 
-              <Grid>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  id="latitude_1"
-                  label="Широта"
-                  name="latitude_1"
-                  inputRef={register}
-                />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  id="longitude_2"
-                  label="Долгота"
-                  name="longitude_2"
-                  inputRef={register}
-                />
-              </Grid>
+		const sendingData = {
+			...data,
+			Driver: Driver.length > 0 ? { Id: Driver[0].Id, FullName: Driver[0].FullName } : {},
+			Entity: Entity[0].value,
+			Status: statusValue,
+		};
 
-              <Grid>
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  id="latitude_2"
-                  label="Широта"
-                  name="latitude_2"
-                  inputRef={register}
-                />
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  id="longitude_2"
-                  label="Долгота"
-                  name="longitude_2"
-                  inputRef={register}
-                />
-              </Grid>
+		console.log(sendingData);
 
-              <Grid>
-                <Button
-                  onClick={onSubmit}
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                >
-                  Сохранить
-                </Button>
-                <Button
+		hubConnection.send('CreateTask', JSON.stringify(sendingData)).then((e) => (window.href = '/'));
+	};
+
+	return (
+		<>
+			<Header name="Create task for driver" />
+			<Grid container component="main" className={classes.root}>
+				<CssBaseline />
+				<Grid item xs={12} sm={8} md={4} component={Paper} elevation={6} square>
+					<div className={classes.paper}>
+						<Typography component="h1" variant="h5">
+							Создание маршутных заданий
+						</Typography>
+						<form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+							<TextField
+								id="time"
+								type="text"
+								margin="normal"
+								fullWidth
+								label="Описание"
+								variant="outlined"
+								name="Description"
+								inputRef={register}
+							/>
+							<Typography component="h1" variant="h6" style={{ marginTop: '10px' }}>
+								Задание
+							</Typography>
+
+							<Grid>
+								<TextField
+									variant="outlined"
+									margin="normal"
+									id="StartLatitude"
+									label="Широта"
+									name="StartLatitude"
+									inputRef={register}
+								/>
+								<TextField
+									variant="outlined"
+									margin="normal"
+									id="StartLongitude"
+									label="Долгота"
+									name="StartLongitude"
+									inputRef={register}
+								/>
+							</Grid>
+
+							<Grid>
+								<TextField
+									variant="outlined"
+									margin="normal"
+									id="EndLatitude"
+									label="Широта"
+									name="EndLatitude"
+									inputRef={register}
+								/>
+								<TextField
+									variant="outlined"
+									margin="normal"
+									id="EndLongitude"
+									label="Долгота"
+									name="EndLongitude"
+									inputRef={register}
+								/>
+							</Grid>
+
+							<Grid style={{ marginTop: '20px' }}>
+								<div>Выберите водителя:</div>
+								{drivers.length > 0 ? (
+									<Select
+										labelId="demo-simple-select-label"
+										id="driver-select"
+										name="driver-select"
+										value={driverValue}
+										style={{ width: '100%', maxWidth: '350px' }}
+										onChange={handleChangeSelect}
+										className="text-capitalize"
+									>
+										{console.log(drivers)}
+
+										{drivers.map((item) => (
+											<MenuItem key={item.Id} value={item.Id} className="text-capitalize">
+												{item.FullName}
+											</MenuItem>
+										))}
+									</Select>
+								) : (
+									<div>...Loading drivers</div>
+								)}
+							</Grid>
+							<Grid style={{ marginTop: '20px' }}>
+								<div>Выберите состояние:</div>
+
+								<Select
+									labelId="demo-simple-select-label"
+									id="status-select"
+									name="status-select"
+									value={statusValue}
+									style={{ width: '100%', maxWidth: '350px' }}
+									className="text-capitalize"
+									onChange={handleChangeSelect}
+								>
+									{statuses.map((item) => (
+										<MenuItem key={item.id} className="text-capitalize" value={item.id}>
+											{item.value}
+										</MenuItem>
+									))}
+								</Select>
+							</Grid>
+
+							<Grid style={{ marginTop: '20px' }}>
+								<div>Выберите условие:</div>
+
+								<Select
+									labelId="demo-simple-select-label"
+									id="condition-select"
+									name="condition-select"
+									value={conditionValue}
+									style={{ width: '100%', maxWidth: '350px' }}
+									onChange={handleChangeSelect}
+									className="text-capitalize"
+								>
+									{conditions.map((item) => (
+										<MenuItem key={item.id} value={item.id} className="text-capitalize">
+											{item.value}
+										</MenuItem>
+									))}
+								</Select>
+							</Grid>
+
+							<Grid>
+								<Button
+									type="submit"
+									variant="contained"
+									color="primary"
+									style={{ marginTop: '20px' }}
+									className={classes.submit}
+								>
+									Сохранить
+								</Button>
+								{/* <Button
                   variant="contained"
                   color="secondary"
                   className={classes.submit}
                   onClick={onSubmit}
                 >
                   Отменить
-                </Button>
-              </Grid>
-            </form>
-          </div>
-        </Grid>
-        <Grid item xs={false} sm={4} md={8}>
-          <YMaps>
-            <Map
-              defaultState={{ center: [55.75, 37.57], zoom: 9 }}
-              width="100%"
-              height="100%"
-            />
-          </YMaps>
-        </Grid>
-      </Grid>
-    </>
-  );
+                </Button> */}
+							</Grid>
+						</form>
+					</div>
+				</Grid>
+				<Grid item xs={false} sm={4} md={8}>
+					<YMaps>
+						<Map defaultState={{ center: [55.75, 37.57], zoom: 9 }} width="100%" height="100%" />
+					</YMaps>
+				</Grid>
+			</Grid>
+		</>
+	);
 }
