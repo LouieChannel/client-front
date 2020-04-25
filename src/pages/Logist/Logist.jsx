@@ -12,11 +12,12 @@ import Header from '../../components/header/Header';
 import Button from '@material-ui/core/Button';
 import useStyles from './style';
 import { useHistory } from 'react-router-dom';
+import { convertArrayToObject } from '../../utils/helpers';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
 export default function Logist() {
-	const [data, setData] = useState([]);
+	const [data, setData] = useState({});
 	const classes = useStyles();
 	const token = localStorage.getItem('access_token');
 
@@ -38,9 +39,23 @@ export default function Logist() {
 
 		startConnection();
 		hubConnection.on('GetAllTasks', (data) => {
-			console.log('data', data);
-			setData(JSON.parse(data));
+			console.log('data', new Date(), data);
+			const receiveData = convertArrayToObject(JSON.parse(data), 'Id');
+			setData(receiveData);
 		});
+
+		hubConnection.on('CreateTask', (data) => {
+			console.log('data-CreateTask', new Date(), data);
+			const receiveData = JSON.parse(data);
+			setData((state) => ({ [receiveData.Id]: { ...receiveData }, ...state }));
+		});
+
+		hubConnection.on('UpdateTask', (data) => {
+			console.log('data-CreateTask', new Date(), data);
+			const receiveData = JSON.parse(data);
+			setData((state) => ({ [receiveData.Id]: { ...receiveData }, ...state }));
+		});
+
 		return () => {
 			hubConnection.stop();
 		};
@@ -67,19 +82,31 @@ export default function Logist() {
 			<main>
 				<div className={classes.heroContent}>
 					<Container maxWidth="lg">
-						{data.length > 0 && (
+						{Object.keys(data).length > 0 && (
 							<TableContainer component={Paper}>
+								{console.log(data)}
 								<Table className={classes.table} aria-label="simple table">
 									<TableBody>
-										{data.map((item) => (
-											<TableRow key={item.Id} hover>
-												<TableCell component="th" scope="row">
-													Driver :{item.Driver.FullName}
-												</TableCell>
-												<TableCell align="right"> Logist :{item.Logist.FullName}</TableCell>
-												<TableCell align="right">CreatedAt :{item.CreatedAt}</TableCell>
-											</TableRow>
-										))}
+										{Object.keys(data)
+											.reverse()
+											.map((i) => {
+												const item = data[i];
+												return (
+													<TableRow key={item.Id} hover>
+														<TableCell component="th" scope="row">
+															{item.Id}
+														</TableCell>
+														<TableCell component="th" scope="row">
+															Driver :{item.Driver.FullName}
+														</TableCell>
+														<TableCell align="right">
+															{' '}
+															Logist :{item.Logist.FullName}
+														</TableCell>
+														<TableCell align="right">CreatedAt :{item.CreatedAt}</TableCell>
+													</TableRow>
+												);
+											})}
 									</TableBody>
 								</Table>
 							</TableContainer>

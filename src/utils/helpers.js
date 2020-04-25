@@ -1,9 +1,19 @@
 function saveToLocalStorage(key, value) {
-  localStorage.setItem(key, value);
+	localStorage.setItem(key, value);
 }
 
 function getFromLocalStorage(key) {
-  return localStorage.getItem(key);
+	return localStorage.getItem(key);
 }
 
-export { saveToLocalStorage, getFromLocalStorage };
+const convertArrayToObject = (array, key) => {
+	const initialValue = {};
+	return array.reduce((obj, item) => {
+		return {
+			...obj,
+			[item[key]]: item,
+		};
+	}, initialValue);
+};
+
+export { saveToLocalStorage, getFromLocalStorage, convertArrayToObject };
