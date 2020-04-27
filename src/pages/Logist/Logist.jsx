@@ -79,7 +79,7 @@ export default function Logist() {
 				}
 			/>
 			<CssBaseline />
-			<main>
+			<div>
 				<div className={classes.heroContent}>
 					<Container maxWidth="lg">
 						{Object.keys(data).length > 0 && (
@@ -116,7 +116,7 @@ export default function Logist() {
 				<Container className={classes.cardGrid} maxWidth="md">
 					{/* End hero unit */}
 				</Container>
-			</main>
+			</div>
 			{/* End footer */}
 		</>
 	);

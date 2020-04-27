@@ -12,7 +12,8 @@ import useStyles from './style';
 import buildConnection from '../../utils/signalRconnection';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { BASE_URL, conditions, statuses, TOKEN } from './config';
+import { BASE_URL, conditions, TOKEN } from './config';
+import { useHistory } from 'react-router-dom';
 
 export default function CreateTask() {
 	const classes = useStyles();
@@ -20,16 +21,14 @@ export default function CreateTask() {
 
 	const [drivers, setDrivers] = useState([]);
 	const [driverValue, setDriverValue] = useState(2);
-	const [statusValue, setStatusValue] = useState(1);
 	const [conditionValue, setConditionValue] = useState(1);
+
+	let history = useHistory();
 
 	const handleChangeSelect = (e) => {
 		const setValue = {
 			'driver-select': (value) => {
 				setDriverValue(value);
-			},
-			'status-select': (value) => {
-				setStatusValue(value);
 			},
 			'condition-select': (value) => {
 				setConditionValue(value);
@@ -86,12 +85,14 @@ export default function CreateTask() {
 			...data,
 			Driver: Driver.length > 0 ? { Id: Driver[0].Id, FullName: Driver[0].FullName } : {},
 			Entity: Entity[0].value,
-			Status: statusValue,
+			Status: 0,
 		};
 
 		console.log(sendingData);
 
 		hubConnection.send('CreateTask', JSON.stringify(sendingData)).then((e) => (window.href = '/'));
+
+		history.push('/logist');
 	};
 
 	return (
@@ -180,25 +181,6 @@ export default function CreateTask() {
 								) : (
 									<div>...Loading drivers</div>
 								)}
-							</Grid>
-							<Grid style={{ marginTop: '20px' }}>
-								<div>Выберите состояние:</div>
-
-								<Select
-									labelId="demo-simple-select-label"
-									id="status-select"
-									name="status-select"
-									value={statusValue}
-									style={{ width: '100%', maxWidth: '350px' }}
-									className="text-capitalize"
-									onChange={handleChangeSelect}
-								>
-									{statuses.map((item) => (
-										<MenuItem key={item.id} className="text-capitalize" value={item.id}>
-											{item.value}
-										</MenuItem>
-									))}
-								</Select>
 							</Grid>
 
 							<Grid style={{ marginTop: '20px' }}>
