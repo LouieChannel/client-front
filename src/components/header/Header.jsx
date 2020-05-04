@@ -5,6 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { requestLogout } from '../../api/auth';
+import { getFromLocalStorage } from '../../utils/helpers';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -20,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Header(props) {
 	const classes = useStyles();
+	const username = getFromLocalStorage('username');
 
 	return (
 		<div className={classes.root}>
@@ -38,14 +41,19 @@ export default function Header(props) {
 						{props.name ? props.name : 'Ascalon'}
 					</Typography>
 					{props.navBar && props.navBar}
-					<Button
-						color="inherit"
-						onClick={() => {
-							requestLogout();
-						}}
-					>
-						Logout
-					</Button>
+
+					<div>
+						{username && <span style={{ padding: '0 10px' }}>Hi, {username}</span>}
+
+						<Button
+							color="inherit"
+							onClick={() => {
+								requestLogout();
+							}}
+						>
+							<ExitToAppIcon />
+						</Button>
+					</div>
 				</Toolbar>
 			</AppBar>
 		</div>

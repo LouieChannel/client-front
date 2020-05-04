@@ -17,26 +17,46 @@ const getUser = () => {
 	};
 };
 
-// function PrivateRoute({ children, ...rest }) {
-//   const user = getUser();
-//   return (
-//     <Route
-//       {...rest}
-//       render={({ location }) =>
-//         user.isAuthenticated ? (
-//           children
-//         ) : (
-//           <Redirect
-//             to={{
-//               pathname: '/Login',
-//               state: { from: location },
-//             }}
-//           />
-//         )
-//       }
-//     />
-//   );
-// }
+function PrivateRoute({ children, ...rest }) {
+	const user = getUser();
+	return (
+		<Route
+			{...rest}
+			render={({ location }) => {
+				if (!user.isAuthenticated)
+					return (
+						<Redirect
+							to={{
+								pathname: '/Login',
+								state: { from: location },
+							}}
+						/>
+					);
+
+				if (user.role === 'Logist')
+					return (
+						<Redirect
+							to={{
+								pathname: '/logist',
+								state: { from: location },
+							}}
+						/>
+					);
+
+				if (user.role === 'Driver')
+					return (
+						<Redirect
+							to={{
+								pathname: '/driver',
+								state: { from: location },
+							}}
+						/>
+					);
+			}}
+		/>
+	);
+}
+
 function LogistPrivateRoute({ children, ...rest }) {
 	const user = getUser();
 	return (
@@ -103,9 +123,9 @@ export default function App() {
 					<LogistPrivateRoute path="/create-task">
 						<CreateTask />
 					</LogistPrivateRoute>
-					<Route path="/">
+					<PrivateRoute path="/">
 						<Home />
-					</Route>
+					</PrivateRoute>
 				</Switch>
 			</Router>
 		</>

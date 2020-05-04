@@ -63,8 +63,15 @@ export default function Driver() {
 			const receiveData = JSON.parse(data);
 			setData((state) => ({
 				...state,
-				[receiveData.Id]: { ...receiveData },
+				[receiveData.Id]: { ...receiveData, New: true },
 			}));
+
+			setTimeout(() => {
+				setData((state) => ({
+					...state,
+					[receiveData.Id]: { ...receiveData },
+				}));
+			}, 5000);
 		});
 
 		return () => {
@@ -98,8 +105,9 @@ export default function Driver() {
 												return (
 													<TableRow
 														key={item.Id}
+														style={item.New ? { background: '#7bcf7b78' } : {}}
 														hover
-														onDoubleClick={() => setShow(!isShow)}
+														onDoubleClick={() => handleOpen(item)}
 													>
 														<TableCell component="th" scope="row">
 															Driver :{item.Driver.FullName}
