@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { YMaps, Map } from 'react-yandex-maps';
 import Header from '../../components/header/Header';
 import useStyles from './style';
@@ -17,7 +17,7 @@ import { useHistory } from 'react-router-dom';
 
 export default function CreateTask() {
 	const classes = useStyles();
-	const { register, handleSubmit } = useForm();
+	const { control, handleSubmit } = useForm();
 
 	const [drivers, setDrivers] = useState([]);
 	const [driverValue, setDriverValue] = useState(2);
@@ -60,14 +60,6 @@ export default function CreateTask() {
 	}, [hubConnection]);
 
 	useEffect(() => {
-		register({ name: 'Description' });
-		register({ name: 'StartLatitude' });
-		register({ name: 'StartLongitude' });
-		register({ name: 'EndLatitude' });
-		register({ name: 'EndLongitude' });
-	}, [register]);
-
-	useEffect(() => {
 		hubConnection.on('GetAllDrivers', (data) => {
 			if (drivers.length === 0) {
 				const parsedData = JSON.parse(data);
@@ -106,7 +98,8 @@ export default function CreateTask() {
 							Создание маршутных заданий
 						</Typography>
 						<form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-							<TextField
+							<Controller
+								as={TextField}
 								id="time"
 								type="text"
 								margin="normal"
@@ -114,47 +107,56 @@ export default function CreateTask() {
 								label="Описание"
 								variant="outlined"
 								name="Description"
-								inputRef={register}
+								control={control}
+								defaultValue=""
 							/>
 							<Typography component="h1" variant="h6" style={{ marginTop: '10px' }}>
 								Задание
 							</Typography>
 
 							<Grid>
-								<TextField
+								<Controller
+									as={TextField}
 									variant="outlined"
 									margin="normal"
 									id="StartLatitude"
 									label="Широта"
 									name="StartLatitude"
-									inputRef={register}
+									control={control}
+									defaultValue=""
 								/>
-								<TextField
+								<Controller
+									as={TextField}
 									variant="outlined"
 									margin="normal"
 									id="StartLongitude"
 									label="Долгота"
 									name="StartLongitude"
-									inputRef={register}
+									control={control}
+									defaultValue=""
 								/>
 							</Grid>
 
 							<Grid>
-								<TextField
+								<Controller
+									as={TextField}
 									variant="outlined"
 									margin="normal"
 									id="EndLatitude"
 									label="Широта"
 									name="EndLatitude"
-									inputRef={register}
+									control={control}
+									defaultValue=""
 								/>
-								<TextField
+								<Controller
+									as={TextField}
 									variant="outlined"
 									margin="normal"
 									id="EndLongitude"
 									label="Долгота"
 									name="EndLongitude"
-									inputRef={register}
+									control={control}
+									defaultValue=""
 								/>
 							</Grid>
 
