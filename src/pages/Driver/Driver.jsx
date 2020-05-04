@@ -52,13 +52,19 @@ export default function Driver() {
 		hubConnection.on('UpdateStatus', (data) => {
 			console.log('data-UpdateStatus', new Date(), data);
 			const receiveData = JSON.parse(data);
-			setData((state) => ({ [receiveData.Id]: { ...receiveData }, ...state }));
+			setData((state) => ({
+				...state,
+				[receiveData.Id]: { ...receiveData },
+			}));
 		});
 
 		hubConnection.on('CreateTask', (data) => {
 			console.log('data-CreateTask', new Date(), data);
 			const receiveData = JSON.parse(data);
-			setData((state) => ({ [receiveData.Id]: { ...receiveData }, ...state }));
+			setData((state) => ({
+				...state,
+				[receiveData.Id]: { ...receiveData },
+			}));
 		});
 
 		return () => {

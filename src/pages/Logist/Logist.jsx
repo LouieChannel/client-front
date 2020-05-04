@@ -49,13 +49,19 @@ export default function Logist() {
 		hubConnection.on('CreateTask', (data) => {
 			console.log('data-CreateTask', new Date(), data);
 			const receiveData = JSON.parse(data);
-			setData((state) => ({ [receiveData.Id]: { ...receiveData }, ...state }));
+			setData((state) => ({
+				...state,
+				[receiveData.Id]: { ...receiveData },
+			}));
 		});
 
 		hubConnection.on('UpdateTask', (data) => {
 			console.log('data-UpdateTask', new Date(), data);
 			const receiveData = JSON.parse(data);
-			setData((state) => ({ [receiveData.Id]: { ...receiveData }, ...state }));
+			setData((state) => ({
+				...state,
+				[receiveData.Id]: { ...receiveData },
+			}));
 		});
 
 		function setStateMachine(d) {
