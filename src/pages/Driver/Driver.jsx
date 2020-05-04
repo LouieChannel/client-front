@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import Popup from '../../components/popup/Popup';
 import UpdateTask from '../UpdateTask/UpdateTask';
 import { convertArrayToObject } from '../../utils/helpers';
+import Spinner from '../../components/spinner/Spinner';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
@@ -80,7 +81,7 @@ export default function Driver() {
 				{/* Hero unit */}
 				<div className={classes.heroContent}>
 					<Container maxWidth="xl">
-						{Object.keys(data).length > 0 && (
+						{Object.keys(data).length > 0 ? (
 							<TableContainer component={Paper}>
 								<Table className={classes.table} aria-label="simple table">
 									<TableBody>
@@ -118,6 +119,8 @@ export default function Driver() {
 									</TableBody>
 								</Table>
 							</TableContainer>
+						) : (
+							<Spinner />
 						)}
 					</Container>
 				</div>
