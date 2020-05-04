@@ -14,6 +14,7 @@ import useStyles from './style';
 import { useHistory } from 'react-router-dom';
 import { convertArrayToObject } from '../../utils/helpers';
 import Spinner from '../../components/spinner/Spinner';
+import { getStateIcon } from '../../components/Icons';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
@@ -57,6 +58,26 @@ export default function Logist() {
 			setData((state) => ({ [receiveData.Id]: { ...receiveData }, ...state }));
 		});
 
+		function setStateMachine(d) {
+			setData((state) => ({
+				...state,
+				[d.Id]: { ...state[d.Id], State: d.State },
+			}));
+		}
+
+		// setTimeout(() => {
+		// 	setStateMachine({
+		// 		'Id': 34,
+		// 		'State': 5,
+		// 	});
+		// }, 5000);
+
+		hubConnection.on('DumperStatus', (data) => {
+			console.log('data-DumperStatus', new Date(), data);
+			const receiveData = JSON.parse(data);
+			setStateMachine(receiveData);
+		});
+
 		return () => {
 			hubConnection.stop();
 		};
@@ -85,6 +106,7 @@ export default function Logist() {
 					<Container maxWidth="lg">
 						{Object.keys(data).length > 0 ? (
 							<TableContainer component={Paper}>
+								{console.log(data, '+++++++')}
 								<Table className={classes.table} aria-label="simple table">
 									<TableBody>
 										{Object.keys(data)
@@ -100,8 +122,10 @@ export default function Logist() {
 															Driver :{item.Driver.FullName}
 														</TableCell>
 														<TableCell align="right">
-															{' '}
 															Logist :{item.Logist.FullName}
+														</TableCell>
+														<TableCell align="right">
+															{item.State && getStateIcon(item.State)}
 														</TableCell>
 														<TableCell align="right">CreatedAt :{item.CreatedAt}</TableCell>
 													</TableRow>
