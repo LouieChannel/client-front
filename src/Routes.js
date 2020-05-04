@@ -6,6 +6,7 @@ import Logist from './pages/Logist/Logist';
 import Driver from './pages/Driver/Driver';
 import CreateTask from './pages/CreateTask/CreateTask';
 import SignUp from './pages/SignUp/SignUp';
+import UpdateTask from './pages/UpdateTask/UpdateTask';
 
 const getUser = () => {
 	const token = localStorage.getItem('access_token');
@@ -95,6 +96,9 @@ export default function App() {
 					</LogistPrivateRoute>
 					<DriverPrivateRoute path="/driver">
 						<Driver />
+					</DriverPrivateRoute>
+					<DriverPrivateRoute path="/update-task">
+						<UpdateTask />
 					</DriverPrivateRoute>
 					<LogistPrivateRoute path="/create-task">
 						<CreateTask />

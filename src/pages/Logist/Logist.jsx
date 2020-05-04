@@ -84,7 +84,6 @@ export default function Logist() {
 					<Container maxWidth="lg">
 						{Object.keys(data).length > 0 && (
 							<TableContainer component={Paper}>
-								{console.log(data)}
 								<Table className={classes.table} aria-label="simple table">
 									<TableBody>
 										{Object.keys(data)
