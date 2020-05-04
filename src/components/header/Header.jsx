@@ -4,6 +4,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import { requestLogout } from '../../api/auth';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -37,7 +38,14 @@ export default function Header(props) {
 						{props.name ? props.name : 'Ascalon'}
 					</Typography>
 					{props.navBar && props.navBar}
-					<Button color="inherit">Logout</Button>
+					<Button
+						color="inherit"
+						onClick={() => {
+							requestLogout();
+						}}
+					>
+						Logout
+					</Button>
 				</Toolbar>
 			</AppBar>
 		</div>

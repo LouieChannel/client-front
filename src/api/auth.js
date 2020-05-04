@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { saveToLocalStorage } from '../utils/helpers';
+import { saveToLocalStorage, removeFromLocalStorage } from '../utils/helpers';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
@@ -37,8 +37,8 @@ async function requestLogin({ email, password }) {
 
 		const data = await req.data;
 
-		const href = getRedirect(req, data);
-		window.location = href;
+		const redirectHref = await getRedirect(req, data);
+		window.location = redirectHref;
 	} catch (error) {
 		console.log('error', error);
 	}
@@ -56,8 +56,8 @@ async function requestSignUp({ email, password, fullName, role }) {
 
 		const data = await req.data;
 
-		const href = getRedirect(req, data);
-		window.location = href;
+		const redirectHref = await getRedirect(req, data);
+		window.location = redirectHref;
 	} catch (error) {
 		console.log('error', error);
 	}
@@ -65,7 +65,8 @@ async function requestSignUp({ email, password, fullName, role }) {
 
 async function requestLogout() {
 	try {
-		axios.get(`${BASE_URL}/auth/logout`);
+		await removeFromLocalStorage('access_token');
+		window.location = '/';
 	} catch (error) {
 		console.log('error', error);
 	}
