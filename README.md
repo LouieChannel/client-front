@@ -1,6 +1,5 @@
 # client-front
 
-
 ## Instal packages:
 
 ```
@@ -11,4 +10,18 @@ npm install
 
 ```
 npm start
+```
+
+## Dockerize:
+
+Build image:
+
+```
+docker build -t client-front .
+```
+
+Run image:
+
+```
+docker run -it --rm -p 80:80 client-front
 ```
