@@ -14,7 +14,10 @@ import useStyles from './style';
 import { useHistory } from 'react-router-dom';
 import { convertArrayToObject } from '../../utils/helpers';
 import Spinner from '../../components/spinner/Spinner';
-import { getStateIcon } from '../../components/Icons';
+import { getStateIcon, getStatusIcon } from '../../components/Icons';
+import TableHead from '@material-ui/core/TableHead';
+import format from 'date-fns/format';
+import { ru } from 'date-fns/locale';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
@@ -71,12 +74,12 @@ export default function Logist() {
 			}));
 		}
 
-		// setTimeout(() => {
-		// 	setStateMachine({
-		// 		'Id': 34,
-		// 		'State': 5,
-		// 	});
-		// }, 5000);
+		setTimeout(() => {
+			setStateMachine({
+				Id: 47,
+				State: 5,
+			});
+		}, 5000);
 
 		hubConnection.on('DumperStatus', (data) => {
 			console.log('data-DumperStatus', new Date(), data);
@@ -114,6 +117,17 @@ export default function Logist() {
 							<TableContainer component={Paper}>
 								{console.log(data, '+++++++')}
 								<Table className={classes.table} aria-label="simple table">
+									<TableHead>
+										<TableRow>
+											<TableCell>Статус</TableCell>
+											<TableCell>Дата</TableCell>
+											<TableCell>Id</TableCell>
+											<TableCell>Описание</TableCell>
+											<TableCell>Entity</TableCell>
+											<TableCell>Водитель</TableCell>
+											<TableCell>Состояние</TableCell>
+										</TableRow>
+									</TableHead>
 									<TableBody>
 										{Object.keys(data)
 											.reverse()
@@ -122,18 +136,24 @@ export default function Logist() {
 												return (
 													<TableRow key={item.Id} hover>
 														<TableCell component="th" scope="row">
-															{item.Id}
+															{getStatusIcon(item.Status)}
+														</TableCell>
+														<TableCell>
+															{format(new Date(item.CreatedAt), 'd  MMMM h:m', {
+																locale: ru,
+															})}
 														</TableCell>
 														<TableCell component="th" scope="row">
-															Driver :{item.Driver.FullName}
+															{item.Id}
 														</TableCell>
-														<TableCell align="right">
-															Logist :{item.Logist.FullName}
+														<TableCell>{item.Description}</TableCell>
+														<TableCell>{item.Entity}</TableCell>
+														<TableCell component="th" scope="row">
+															{item.Driver.FullName}
 														</TableCell>
-														<TableCell align="right">
-															{item.State && getStateIcon(item.State)}
+														<TableCell>
+															{item.State ? getStateIcon(item.State) : '-'}
 														</TableCell>
-														<TableCell align="right">CreatedAt :{item.CreatedAt}</TableCell>
 													</TableRow>
 												);
 											})}

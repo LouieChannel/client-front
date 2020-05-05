@@ -4,6 +4,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
+import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
@@ -15,6 +16,9 @@ import Popup from '../../components/popup/Popup';
 import UpdateTask from '../UpdateTask/UpdateTask';
 import { convertArrayToObject } from '../../utils/helpers';
 import Spinner from '../../components/spinner/Spinner';
+import { getStatusIcon } from '../../components/Icons';
+import { ru } from 'date-fns/locale';
+import format from 'date-fns/format';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
@@ -97,6 +101,16 @@ export default function Driver() {
 						{Object.keys(data).length > 0 ? (
 							<TableContainer component={Paper}>
 								<Table className={classes.table} aria-label="simple table">
+									<TableHead>
+										<TableRow>
+											<TableCell>Статус</TableCell>
+											<TableCell>Дата</TableCell>
+											<TableCell>Описание</TableCell>
+											<TableCell>Entity</TableCell>
+											<TableCell>Логист</TableCell>
+											<TableCell>Открыть</TableCell>
+										</TableRow>
+									</TableHead>
 									<TableBody>
 										{Object.keys(data)
 											.reverse()
@@ -110,16 +124,18 @@ export default function Driver() {
 														onDoubleClick={() => handleOpen(item)}
 													>
 														<TableCell component="th" scope="row">
-															Driver :{item.Driver.FullName}
+															{getStatusIcon(item.Status)}
 														</TableCell>
-														<TableCell component="th" scope="row">
-															Status :{item.Status}
+														{/*item.CreatedAt*/}
+														<TableCell>
+															{format(new Date(item.CreatedAt), 'd  MMMM h:m', {
+																locale: ru,
+															})}
 														</TableCell>
-														<TableCell align="right">
-															Logist :{item.Logist.FullName}
-														</TableCell>
-														<TableCell align="right">CreatedAt :{item.CreatedAt}</TableCell>
-														<TableCell align="right">
+														<TableCell>{item.Description}</TableCell>
+														<TableCell>{item.Entity}</TableCell>
+														<TableCell>{item.Logist.FullName}</TableCell>
+														<TableCell>
 															<Button
 																variant="contained"
 																onClick={() => handleOpen(item)}
