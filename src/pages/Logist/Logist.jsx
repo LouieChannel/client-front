@@ -74,12 +74,12 @@ export default function Logist() {
 			}));
 		}
 
-		setTimeout(() => {
-			setStateMachine({
-				Id: 47,
-				State: 5,
-			});
-		}, 5000);
+		// setTimeout(() => {
+		// 	setStateMachine({
+		// 		Id: 47,
+		// 		State: 5,
+		// 	});
+		// }, 5000);
 
 		hubConnection.on('DumperStatus', (data) => {
 			console.log('data-DumperStatus', new Date(), data);
