@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -6,16 +6,18 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-import { YMaps, Map } from 'react-yandex-maps';
 import useStyles from './style';
 import buildConnection from '../../utils/signalRconnection';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { BASE_URL } from './config';
+import CustomMap from '../CreateTask/CustomMap';
 
 export default function UpdateTask(props) {
 	const classes = useStyles();
 	const token = localStorage.getItem('access_token');
+
+	const [mapReady, setMapReady] = useState(false);
 
 	const hubConnection = buildConnection(`${BASE_URL}/driver/`, {
 		accessTokenFactory: () => token,
@@ -33,9 +35,16 @@ export default function UpdateTask(props) {
 	}
 
 	useEffect(() => {
-		startConnection();
+		if (!hubConnection.connectionId) {
+			startConnection();
+		}
+
+		setTimeout(() => {
+			setMapReady(true);
+		}, 500);
+
 		// eslint-disable-next-line
-	}, []);
+	}, [hubConnection]);
 
 	function handleClick(type) {
 		if (type === 'start') {
@@ -50,7 +59,6 @@ export default function UpdateTask(props) {
 	}
 
 	async function handleUpdate(data) {
-		console.log({ hubConnection, data });
 		if (hubConnection.connectionId) {
 			await hubConnection.send('UpdateStatus', JSON.stringify(data));
 			await props.onClose();
@@ -173,9 +181,14 @@ export default function UpdateTask(props) {
 					</div>
 				</Grid>
 				<Grid item xs={false} sm={4} md={8}>
-					<YMaps>
-						<Map defaultState={{ center: [55.75, 37.57], zoom: 9 }} width="100%" height="100%" />
-					</YMaps>
+					{mapReady && (
+						<CustomMap
+							route={[
+								[props.data.StartLatitude, props.data.StartLongitude],
+								[props.data.EndLatitude, props.data.EndLongitude],
+							]}
+						/>
+					)}
 				</Grid>
 			</Grid>
 		</>

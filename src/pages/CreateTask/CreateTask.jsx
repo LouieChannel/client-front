@@ -6,7 +6,6 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { Controller, useForm } from 'react-hook-form';
-import { YMaps, Map } from 'react-yandex-maps';
 import Header from '../../components/header/Header';
 import useStyles from './style';
 import buildConnection from '../../utils/signalRconnection';
@@ -14,6 +13,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { BASE_URL, conditions, TOKEN } from './config';
 import { useHistory } from 'react-router-dom';
+import CustomMap from './CustomMap';
+import InputSearch from './InputSearch';
+import { Map, YMaps } from 'react-yandex-maps';
 
 export default function CreateTask() {
 	const classes = useStyles();
@@ -22,6 +24,10 @@ export default function CreateTask() {
 	const [drivers, setDrivers] = useState([]);
 	const [driverValue, setDriverValue] = useState(2);
 	const [conditionValue, setConditionValue] = useState(1);
+
+	const [startArray, setStartArray] = useState([]);
+	const [endArray, setEndArray] = useState([]);
+	const [mapReady, setMapReady] = useState(false);
 
 	let history = useHistory();
 
@@ -42,17 +48,29 @@ export default function CreateTask() {
 		accessTokenFactory: () => TOKEN,
 	});
 
+	const [remove, setRemove] = useState(true);
+
+	useEffect(() => {
+		if (!remove) {
+			setTimeout(() => {
+				setRemove(true);
+			}, 400);
+		}
+	}, [remove]);
+
 	useEffect(() => {
 		function startConnection() {
 			hubConnection
 				.start()
 				.then(() => {
-					hubConnection.send('GetAllDrivers');
+					hubConnection.invoke('GetAllDrivers');
 				})
 				.catch((e) => console.log(e));
 		}
 
-		startConnection();
+		if (!hubConnection.connectionId) {
+			startConnection();
+		}
 
 		return () => {
 			hubConnection.stop();
@@ -75,6 +93,10 @@ export default function CreateTask() {
 
 		const sendingData = {
 			...data,
+			StartLatitude: startArray[0],
+			StartLongitude: startArray[1],
+			EndLatitude: endArray[0],
+			EndLongitude: endArray[1],
 			Driver: Driver.length > 0 ? { Id: Driver[0].Id, FullName: Driver[0].FullName } : {},
 			Entity: Entity[0].value,
 			Status: 0,
@@ -82,10 +104,26 @@ export default function CreateTask() {
 
 		console.log(sendingData);
 
-		hubConnection.send('CreateTask', JSON.stringify(sendingData)).then((e) => (window.href = '/'));
+		hubConnection.send('CreateTask', JSON.stringify(sendingData));
 
 		history.push('/logist');
 	};
+
+	function handleChangeInputSearch(value) {
+		if (startArray.length === 0) {
+			setStartArray(value);
+		} else {
+			setEndArray(value);
+		}
+
+		setRemove(false);
+	}
+
+	function handleClick() {
+		if (startArray.length > 0 && endArray.length > 0) {
+			setMapReady(true);
+		}
+	}
 
 	return (
 		<>
@@ -114,50 +152,50 @@ export default function CreateTask() {
 								Задание
 							</Typography>
 
+							{remove && <InputSearch onChange={handleChangeInputSearch} />}
+
 							<Grid>
-								<Controller
-									as={TextField}
+								<TextField
 									variant="outlined"
 									margin="normal"
 									id="StartLatitude"
 									label="Широта"
 									name="StartLatitude"
-									control={control}
-									defaultValue=""
+									value={startArray.length > 0 ? startArray[0] : ''}
 								/>
-								<Controller
-									as={TextField}
+								<TextField
 									variant="outlined"
 									margin="normal"
 									id="StartLongitude"
 									label="Долгота"
 									name="StartLongitude"
-									control={control}
-									defaultValue=""
+									value={startArray.length > 0 ? startArray[1] : ''}
 								/>
 							</Grid>
 
 							<Grid>
-								<Controller
-									as={TextField}
+								<TextField
 									variant="outlined"
 									margin="normal"
 									id="EndLatitude"
 									label="Широта"
 									name="EndLatitude"
-									control={control}
-									defaultValue=""
+									value={endArray.length > 0 ? endArray[0] : ''}
 								/>
-								<Controller
-									as={TextField}
+								<TextField
 									variant="outlined"
 									margin="normal"
 									id="EndLongitude"
 									label="Долгота"
 									name="EndLongitude"
-									control={control}
-									defaultValue=""
+									value={endArray.length > 0 ? endArray[1] : ''}
 								/>
+							</Grid>
+
+							<Grid>
+								<Button variant="contained" color="primary" onClick={handleClick}>
+									Построить маршут
+								</Button>
 							</Grid>
 
 							<Grid style={{ marginTop: '20px' }}>
@@ -172,8 +210,6 @@ export default function CreateTask() {
 										onChange={handleChangeSelect}
 										className="text-capitalize"
 									>
-										{console.log(drivers)}
-
 										{drivers.map((item) => (
 											<MenuItem key={item.Id} value={item.Id} className="text-capitalize">
 												{item.FullName}
@@ -215,22 +251,18 @@ export default function CreateTask() {
 								>
 									Сохранить
 								</Button>
-								{/* <Button
-                  variant="contained"
-                  color="secondary"
-                  className={classes.submit}
-                  onClick={onSubmit}
-                >
-                  Отменить
-                </Button> */}
 							</Grid>
 						</form>
 					</div>
 				</Grid>
 				<Grid item xs={false} sm={4} md={8}>
-					<YMaps>
-						<Map defaultState={{ center: [55.75, 37.57], zoom: 9 }} width="100%" height="100%" />
-					</YMaps>
+					{mapReady ? (
+						<CustomMap route={[startArray, endArray]} />
+					) : (
+						<YMaps>
+							<Map defaultState={{ center: [55.75, 37.57], zoom: 9 }} width="100%" height="100%" />
+						</YMaps>
+					)}
 				</Grid>
 			</Grid>
 		</>

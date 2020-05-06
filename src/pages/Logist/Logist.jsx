@@ -67,10 +67,10 @@ export default function Logist() {
 			}));
 		});
 
-		function setStateMachine(d) {
+		function setStateMachine(recievedData) {
 			setData((state) => ({
 				...state,
-				[d.Id]: { ...state[d.Id], State: d.State },
+				[recievedData.Id]: { ...state[recievedData.Id], State: recievedData.State },
 			}));
 		}
 
@@ -82,7 +82,7 @@ export default function Logist() {
 		// }, 5000);
 
 		hubConnection.on('DumperStatus', (data) => {
-			console.log('data-DumperStatus', new Date(), data);
+			console.log('data-DumperStatus', new Date(), JSON.parse(data));
 			const receiveData = JSON.parse(data);
 			setStateMachine(receiveData);
 		});
