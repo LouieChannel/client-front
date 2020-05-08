@@ -35,7 +35,7 @@ export default function Header(props) {
 							window.location = '/';
 						}}
 					>
-						Home
+						Главная
 					</Typography>
 					<Typography variant="h6" className={classes.title}>
 						{props.name ? props.name : 'Ascalon'}
@@ -43,7 +43,7 @@ export default function Header(props) {
 					{props.navBar && props.navBar}
 
 					<div>
-						{username && <span style={{ padding: '0 10px' }}>Hi, {username}</span>}
+						{username && <span style={{ padding: '0 10px' }}>{username}</span>}
 
 						<Button
 							color="inherit"

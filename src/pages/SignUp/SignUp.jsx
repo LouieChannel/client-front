@@ -46,7 +46,7 @@ export default function SignUp() {
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography component="h1" variant="h5">
-						Sign up
+						Регистрация
 					</Typography>
 					<form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
 						<Controller
@@ -98,7 +98,19 @@ export default function SignUp() {
 						</RadioGroup>
 
 						<Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-							Sign Up
+							Зарегистрироваться
+						</Button>
+
+						<Button
+							onClick={() => {
+								window.location.href = '/login';
+							}}
+							fullWidth
+							variant="contained"
+							color="secondary"
+							className={classes.submit}
+						>
+							Вход
 						</Button>
 						<Box mt={5}>
 							<Copyright />

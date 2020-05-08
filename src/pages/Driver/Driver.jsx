@@ -39,7 +39,7 @@ export default function Driver() {
 			.start()
 			.then(() => {
 				if (hubConnection.connectionId) {
-					hubConnection.invoke('GetDriverTasks');
+					hubConnection.send('GetDriverTasks');
 				}
 			})
 			.catch((e) => console.log(e));
@@ -92,7 +92,7 @@ export default function Driver() {
 
 	return (
 		<>
-			<Header name="Driver" />
+			<Header name="Водитель" />
 			<CssBaseline />
 			<main>
 				{/* Hero unit */}
@@ -106,7 +106,7 @@ export default function Driver() {
 											<TableCell>Статус</TableCell>
 											<TableCell>Дата</TableCell>
 											<TableCell>Описание</TableCell>
-											<TableCell>Entity</TableCell>
+											<TableCell>Цель</TableCell>
 											<TableCell>Логист</TableCell>
 											<TableCell>Открыть</TableCell>
 										</TableRow>

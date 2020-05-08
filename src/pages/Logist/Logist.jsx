@@ -102,7 +102,7 @@ export default function Logist() {
 	return (
 		<>
 			<Header
-				name="Logist"
+				name="Логист"
 				navBar={
 					<Button variant="contained" onClick={handleClick}>
 						Создать задачу
@@ -121,9 +121,8 @@ export default function Logist() {
 										<TableRow>
 											<TableCell>Статус</TableCell>
 											<TableCell>Дата</TableCell>
-											<TableCell>Id</TableCell>
 											<TableCell>Описание</TableCell>
-											<TableCell>Entity</TableCell>
+											<TableCell>Цель</TableCell>
 											<TableCell>Водитель</TableCell>
 											<TableCell>Состояние</TableCell>
 										</TableRow>
@@ -142,9 +141,6 @@ export default function Logist() {
 															{format(new Date(item.CreatedAt), 'd  MMMM h:m', {
 																locale: ru,
 															})}
-														</TableCell>
-														<TableCell component="th" scope="row">
-															{item.Id}
 														</TableCell>
 														<TableCell>{item.Description}</TableCell>
 														<TableCell>{item.Entity}</TableCell>

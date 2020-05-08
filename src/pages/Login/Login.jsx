@@ -35,7 +35,7 @@ export default function SignInSide() {
 						<LockOutlinedIcon />
 					</Avatar>
 					<Typography component="h1" variant="h5">
-						Sign in
+						Вход
 					</Typography>
 					<form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
 						<Controller
@@ -68,7 +68,18 @@ export default function SignInSide() {
 						/>
 
 						<Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
-							Sign In
+							Войти
+						</Button>
+						<Button
+							onClick={() => {
+								window.location.href = '/sign_up';
+							}}
+							fullWidth
+							variant="contained"
+							color="secondary"
+							className={classes.submit}
+						>
+							Регистрация
 						</Button>
 						<Box mt={5}>
 							<Copyright />
