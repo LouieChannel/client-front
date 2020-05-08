@@ -16,6 +16,7 @@ import { useHistory } from 'react-router-dom';
 import CustomMap from './CustomMap';
 import InputSearch from './InputSearch';
 import { Map, YMaps } from 'react-yandex-maps';
+import Alert from '@material-ui/lab/Alert';
 
 export default function CreateTask() {
 	const classes = useStyles();
@@ -152,51 +153,72 @@ export default function CreateTask() {
 								Задание
 							</Typography>
 
-							{remove && <InputSearch onChange={handleChangeInputSearch} />}
+							{remove && (
+								<>
+									{startArray.length > 0 && endArray.length > 0 ? (
+										<></>
+									) : (
+										<InputSearch onChange={handleChangeInputSearch} />
+									)}
+								</>
+							)}
 
-							<Grid>
-								<TextField
-									variant="outlined"
-									margin="normal"
-									id="StartLatitude"
-									label="Широта"
-									name="StartLatitude"
-									value={startArray.length > 0 ? startArray[0] : ''}
-								/>
-								<TextField
-									variant="outlined"
-									margin="normal"
-									id="StartLongitude"
-									label="Долгота"
-									name="StartLongitude"
-									value={startArray.length > 0 ? startArray[1] : ''}
-								/>
-							</Grid>
+							{startArray.length === 0 && endArray.length === 0 ? (
+								<Alert severity="info">Введите адрес для построения маршрута</Alert>
+							) : (
+								<div style={{ marginTop: '10px' }}>
+									<Grid>
+										Точка А:
+										<TextField
+											variant="outlined"
+											margin="normal"
+											id="StartLatitude"
+											label="Широта"
+											name="StartLatitude"
+											value={startArray.length > 0 ? startArray[0] : ''}
+										/>
+										<TextField
+											variant="outlined"
+											margin="normal"
+											id="StartLongitude"
+											label="Долгота"
+											name="StartLongitude"
+											value={startArray.length > 0 ? startArray[1] : ''}
+										/>
+									</Grid>
+									{endArray.length === 0 ? (
+										<Alert severity="info">Введите адрес точки назначения</Alert>
+									) : (
+										<Grid>
+											Точка Б:
+											<TextField
+												variant="outlined"
+												margin="normal"
+												id="EndLatitude"
+												label="Широта"
+												name="EndLatitude"
+												value={endArray.length > 0 ? endArray[0] : ''}
+											/>
+											<TextField
+												variant="outlined"
+												margin="normal"
+												id="EndLongitude"
+												label="Долгота"
+												name="EndLongitude"
+												value={endArray.length > 0 ? endArray[1] : ''}
+											/>
+										</Grid>
+									)}
+								</div>
+							)}
 
-							<Grid>
-								<TextField
-									variant="outlined"
-									margin="normal"
-									id="EndLatitude"
-									label="Широта"
-									name="EndLatitude"
-									value={endArray.length > 0 ? endArray[0] : ''}
-								/>
-								<TextField
-									variant="outlined"
-									margin="normal"
-									id="EndLongitude"
-									label="Долгота"
-									name="EndLongitude"
-									value={endArray.length > 0 ? endArray[1] : ''}
-								/>
-							</Grid>
-
-							<Grid>
-								<Button variant="contained" color="primary" onClick={handleClick}>
-									Построить маршут
-								</Button>
-							</Grid>
+							{startArray.length > 0 && endArray.length > 0 && (
+								<Grid>
+									<Button variant="contained" color="primary" onClick={handleClick}>
+										Построить маршут
+									</Button>
+								</Grid>
+							)}
 
 							<Grid style={{ marginTop: '20px' }}>
 								<div>Выберите водителя:</div>
