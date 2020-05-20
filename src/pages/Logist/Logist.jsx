@@ -49,8 +49,8 @@ export default function Logist() {
 			setData(receiveData);
 		});
 
-		hubConnection.on('CreateTask', (data) => {
-			console.log('data-CreateTask', new Date(), data);
+		hubConnection.on('UpdateTask', (data) => {
+			console.log('data-UpdateTask', new Date(), data);
 			const receiveData = JSON.parse(data);
 			setData((state) => ({
 				...state,
@@ -58,8 +58,17 @@ export default function Logist() {
 			}));
 		});
 
-		hubConnection.on('UpdateTask', (data) => {
-			console.log('data-UpdateTask', new Date(), data);
+		hubConnection.on('UpdateStatus', (data) => {
+			console.log('data-UpdateStatus', new Date(), data);
+			const receiveData = JSON.parse(data);
+			setData((state) => ({
+				...state,
+				[receiveData.Id]: { ...receiveData },
+			}));
+		});
+
+		hubConnection.on('CreateTask', (data) => {
+			console.log('data-CreateTask', new Date(), data);
 			const receiveData = JSON.parse(data);
 			setData((state) => ({
 				...state,
