@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { saveToLocalStorage, removeFromLocalStorage } from '../utils/helpers';
+import { removeFromLocalStorage, saveToLocalStorage } from '../utils/helpers';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
@@ -42,10 +42,10 @@ async function requestLogin({ email, password }) {
 
 		const data = await req.data;
 
-		const redirectHref = await getRedirect(req, data);
-		window.location = redirectHref;
+		window.location = await getRedirect(req, data);
 	} catch (error) {
-		console.log('error', error);
+		console.log('error', error.message);
+		return false;
 	}
 }
 
@@ -61,10 +61,10 @@ async function requestSignUp({ email, password, fullName, role }) {
 
 		const data = await req.data;
 
-		const redirectHref = await getRedirect(req, data);
-		window.location = redirectHref;
+		window.location = await getRedirect(req, data);
 	} catch (error) {
 		console.log('error', error);
+		return false;
 	}
 }
 
