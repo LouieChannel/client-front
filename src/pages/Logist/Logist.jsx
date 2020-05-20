@@ -14,10 +14,16 @@ import useStyles from './style';
 import { useHistory } from 'react-router-dom';
 import { convertArrayToObject } from '../../utils/helpers';
 import Spinner from '../../components/spinner/Spinner';
-import { getStateIcon, getStatusIcon } from '../../components/Icons';
+import { getStatusIcon } from '../../components/Icons';
 import TableHead from '@material-ui/core/TableHead';
 import format from 'date-fns/format';
 import { ru } from 'date-fns/locale';
+
+import State1Image from '../../assets/state1.png';
+import State2Image from '../../assets/state2.png';
+import State3Image from '../../assets/state3.png';
+import State4Image from '../../assets/state4.png';
+import State5Image from '../../assets/state5.png';
 
 const BASE_URL = process.env.BASE_URL || 'http://34.77.137.219';
 
@@ -157,7 +163,27 @@ export default function Logist() {
 															{item.Driver.FullName}
 														</TableCell>
 														<TableCell>
-															{item.State ? getStateIcon(item.State) : '-'}
+															{item.State ? (
+																<>
+																	{item.State === 1 && (
+																		<img src={State1Image} alt="State1Image" />
+																	)}
+																	{item.State === 2 && (
+																		<img src={State2Image} alt="State2Image" />
+																	)}
+																	{item.State === 3 && (
+																		<img src={State3Image} alt="State3Image" />
+																	)}
+																	{item.State === 4 && (
+																		<img src={State4Image} alt="State4Image" />
+																	)}
+																	{item.State === 5 && (
+																		<img src={State5Image} alt="State5Image" />
+																	)}
+																</>
+															) : (
+																'-'
+															)}
 														</TableCell>
 													</TableRow>
 												);
