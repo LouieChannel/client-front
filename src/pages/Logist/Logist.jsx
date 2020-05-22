@@ -89,13 +89,6 @@ export default function Logist() {
 			}));
 		}
 
-		// setTimeout(() => {
-		// 	setStateMachine({
-		// 		Id: 47,
-		// 		State: 5,
-		// 	});
-		// }, 5000);
-
 		hubConnection.on('DumperStatus', (data) => {
 			console.log('data-DumperStatus', new Date(), JSON.parse(data));
 			const receiveData = JSON.parse(data);
@@ -139,6 +132,7 @@ export default function Logist() {
 											<TableCell>Описание</TableCell>
 											<TableCell>Цель</TableCell>
 											<TableCell>Водитель</TableCell>
+											<TableCell>Оператор</TableCell>
 											<TableCell>Состояние</TableCell>
 										</TableRow>
 									</TableHead>
@@ -162,6 +156,7 @@ export default function Logist() {
 														<TableCell component="th" scope="row">
 															{item.Driver.FullName}
 														</TableCell>
+														<TableCell>{item.Logist.FullName}</TableCell>
 														<TableCell>
 															{item.State ? (
 																<>
